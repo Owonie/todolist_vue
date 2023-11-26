@@ -5,6 +5,7 @@ declare module '@vue/runtime-core' {
   interface State {
     categories: string;
     tasks: Array<any>;
+    searchKeyword: string;
   }
 
   interface ComponentCustomProperties {

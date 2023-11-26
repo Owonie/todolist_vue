@@ -11,13 +11,18 @@
       <option value="state">상태</option>
       <option value="date">날짜</option>
     </select>
-    <input type="text" />
+    <input
+      type="text"
+      v-model="searchKeyword"
+      name="searchKeywordInput"
+      @input="updateSearchKeyword"
+    />
   </div>
   <button v-if="!addMode" @click="startAdding">+</button>
   <TaskCardAddForm v-else @add-task="addTask" @cancel-add="stopAdding" />
   <div>
     <TaskCard
-      v-for="(task, index) in tasks"
+      v-for="(task, index) in filteredTasks"
       :key="index"
       :title="task.title"
       :description="task.description"
@@ -31,7 +36,7 @@
 <script lang="ts">
 import TaskCard from '../components/tasks/TaskCard.vue';
 import TaskCardAddForm from '../components/tasks/TaskCardAddForm.vue';
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 
 export default {
   name: 'tasks-comp',
@@ -39,21 +44,6 @@ export default {
   data() {
     return {
       addMode: false,
-      selectedCategory: 'title',
-      tasks: [
-        {
-          title: 'Task 1',
-          description: 'description 1',
-          date: '2023-01-01',
-          state: 'pending',
-        },
-        {
-          title: 'Task 2',
-          description: 'description 2',
-          date: '2023-02-01',
-          state: 'completed',
-        },
-      ],
     };
   },
   methods: {
@@ -64,38 +54,29 @@ export default {
       this.addMode = false;
     },
     addTask(newTask: any) {
-      this.tasks.push(newTask);
+      this.$store.dispatch('addTask', newTask);
       this.stopAdding();
     },
     updateTask(index: number, updatedTask: any) {
-      this.$store.commit(
-        'updateTasks',
-        this.updateTaskInArray(index, updatedTask)
-      );
-      console.log('updated', this.tasks);
+      this.$store.dispatch('updateTask', { index, updatedTask });
     },
-    updateTaskInArray(index: number, updatedTask: any): Array<any> {
-      const newArray = [...this.tasks];
-      newArray[index] = updatedTask;
-      return newArray;
+    updateSearchKeyword(event: Event) {
+      const newKeyword = (event.target as HTMLInputElement).value;
+      this.$store.commit('updateSearchKeyword', newKeyword);
+    },
+    setSelectedCategory(value: string): void {
+      this.$store.commit('updateCategories', value);
     },
   },
   computed: {
-    ...mapState(['categories', 'tasks']),
+    ...mapState(['categories', 'searchKeyword']),
+    ...mapGetters(['filteredTasks']),
     selectedCategory: {
       get(): string {
         return this.$store.state.categories;
       },
       set(value: string) {
         this.$store.commit('updateCategories', value);
-      },
-    },
-    tasks: {
-      get(): Array<any> {
-        return this.$store.state.tasks;
-      },
-      set(value: Array<any>) {
-        this.$store.commit('updateTasks', value);
       },
     },
   },
