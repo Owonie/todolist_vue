@@ -1,3 +1,9 @@
+<template>
+  <a href="/">Tasks</a>
+  <a href="/analystics">Analystics</a>
+  <component :is="currentView" />
+</template>
+
 <script lang="ts">
 import { Component, defineComponent } from 'vue';
 import Analystics from '../pages/Analystics.vue';
@@ -27,9 +33,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<template>
-  <a href="/">Tasks</a>
-  <a href="/analystics">Analystics</a>
-  <component :is="currentView" />
-</template>
