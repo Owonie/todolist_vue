@@ -2,9 +2,12 @@
   <div class="task-card">
     <form class="task-card-editmode" @submit="submitChanges">
       <input type="text" v-model="editedTitle" @keyup.enter="submitChanges" />
-      <textarea v-model="editedContent" @keyup.enter="submitChanges"></textarea>
+      <textarea
+        v-model="editedDescription"
+        @keyup.enter="submitChanges"
+      ></textarea>
       <input type="text" v-model="editedDate" @keyup.enter="submitChanges" />
-      <select v-model="editedState">
+      <select v-model="editedState" label="선택">
         <option value="unstarted">진행전</option>
         <option value="pending">진행중</option>
         <option value="completed">완료</option>
@@ -21,7 +24,7 @@ export default {
   data() {
     return {
       editedTitle: '',
-      editedContent: '',
+      editedDescription: '',
       editedDate: '',
       editedState: '',
     };
@@ -30,8 +33,8 @@ export default {
     title(newTitle) {
       this.editedTitle = newTitle;
     },
-    content(newContent) {
-      this.editedContent = newContent;
+    description(newDescription) {
+      this.editedDescription = newDescription;
     },
     date(newDate) {
       this.editedDate = newDate;
@@ -44,7 +47,7 @@ export default {
     submitChanges() {
       this.$emit('add-task', {
         title: this.editedTitle,
-        content: this.editedContent,
+        description: this.editedDescription,
         date: this.editedDate,
         state: this.editedState,
       });

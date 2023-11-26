@@ -2,19 +2,23 @@
   <div class="task-card" @click="startEditing">
     <div v-if="!editMode" class="task-card-normal">
       <h2>{{ editedTitle }}</h2>
-      <div>{{ editedContent }}</div>
+      <div>{{ editedDescription }}</div>
       <div>{{ editedDate }}</div>
       <div>{{ editedState }}</div>
     </div>
     <form v-else class="task-card-editmode" @submit="submitChanges">
       <input type="text" v-model="editedTitle" @keyup.enter="submitChanges" />
-      <textarea v-model="editedContent" @keyup.enter="submitChanges"></textarea>
+      <textarea
+        v-model="editedDescription"
+        @keyup.enter="submitChanges"
+      ></textarea>
       <input type="text" v-model="editedDate" @keyup.enter="submitChanges" />
-      <select v-model="editedState">
+      <select v-model="editedState" label="선택">
         <option value="unstarted">진행전</option>
         <option value="pending">진행중</option>
         <option value="completed">완료</option>
       </select>
+
       <button type="submit">Submit</button>
       <button type="button" @click="stopEditing">Cancel</button>
     </form>
@@ -26,7 +30,7 @@ export default {
   name: 'task-card',
   props: {
     title: String,
-    content: String,
+    description: String,
     date: String,
     state: String,
   },
@@ -34,7 +38,7 @@ export default {
     return {
       editMode: false,
       editedTitle: this.title,
-      editedContent: this.content,
+      editedDescription: this.description,
       editedDate: this.date,
       editedState: this.state,
     };
@@ -43,8 +47,8 @@ export default {
     title(newTitle) {
       this.editedTitle = newTitle;
     },
-    content(newContent) {
-      this.editedContent = newContent;
+    description(newDescription) {
+      this.editedDescription = newDescription;
     },
     date(newDate) {
       this.editedDate = newDate;
@@ -63,7 +67,7 @@ export default {
     submitChanges() {
       this.$emit('update-task', {
         title: this.editedTitle,
-        content: this.editedContent,
+        description: this.editedDescription,
         date: this.editedDate,
         state: this.editedState,
       });
